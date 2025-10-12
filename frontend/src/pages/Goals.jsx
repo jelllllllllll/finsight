@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { Link } from 'react-router-dom';
 import React from "react";
+import { formatIDR } from '../utils/format';
 
 export default function Goals() {
   const [goals, setGoals] = useState([]);

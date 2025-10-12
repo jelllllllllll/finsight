@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { Link } from 'react-router-dom';
 import React from "react";
+import { formatIDR } from '../utils/format';
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
@@ -22,34 +23,27 @@ export default function Transactions() {
   }, []);
 
   const handleAdd = async (e) => {
-  e.preventDefault();
-  try {
-    await api.post('/transactions', { ...form, amount: Number(form.amount) });
-    setForm({ type: 'Expense', category: '', amount: '', date: '', notes: '' });
-    await fetchTransactions();
+    e.preventDefault();
+    try {
+      await api.post('/transactions', { ...form, amount: Number(form.amount) });
+      setForm({ type: 'Expense', category: '', amount: '', date: '', notes: '' });
+      fetchTransactions();
+    } catch (err) {
+      console.error('Error adding transaction:', err);
+      alert('Error adding transaction. Please check your token or input.');
+    }
+  };
 
-    // 🔥 Notify other tabs/pages (like Goals) to refresh live
-    window.dispatchEvent(new Event('goalsUpdated'));
-  } catch (err) {
-    console.error('Error adding transaction:', err);
-    alert('Error adding transaction. Please check your token or input.');
-  }
-};
-
-const handleDelete = async (id) => {
-  if (!confirm('Delete this transaction?')) return;
-  try {
-    await api.delete(`/transactions/${id}`);
-    await fetchTransactions();
-
-    // 🔥 Trigger goal refresh as well
-    window.dispatchEvent(new Event('goalsUpdated'));
-  } catch (err) {
-    console.error('Error deleting transaction:', err);
-    alert('Failed to delete transaction.');
-  }
-};
-
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this transaction?')) return;
+    try {
+      await api.delete(`/transactions/${id}`);
+      fetchTransactions();
+    } catch (err) {
+      console.error('Error deleting transaction:', err);
+      alert('Failed to delete transaction.');
+    }
+  };
 
   return (
     <div className="container">

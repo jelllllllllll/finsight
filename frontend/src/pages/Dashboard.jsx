@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { LineChart, Line, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Link } from 'react-router-dom';
 import React from "react";
+import { formatIDR } from '../utils/format';
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
