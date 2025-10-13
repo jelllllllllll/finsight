@@ -7,6 +7,7 @@ import { formatIDR } from '../utils/format';
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
   const [form, setForm] = useState({ type: 'Expense', category: '', amount: '', date: '', notes: '' });
+  const [editingId, setEditingId] = useState(null);
 
   const fetchTransactions = async () => {
     try {
@@ -22,15 +23,23 @@ export default function Transactions() {
     fetchTransactions();
   }, []);
 
-  const handleAdd = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/transactions', { ...form, amount: Number(form.amount) });
+      if (editingId) {
+        // Update transaction
+        await api.put(`/transactions/${editingId}`, { ...form, amount: Number(form.amount) });
+      } else {
+        // Create new transaction
+        await api.post('/transactions', { ...form, amount: Number(form.amount) });
+      }
+
       setForm({ type: 'Expense', category: '', amount: '', date: '', notes: '' });
+      setEditingId(null);
       fetchTransactions();
     } catch (err) {
-      console.error('Error adding transaction:', err);
-      alert('Error adding transaction. Please check your token or input.');
+      console.error('Error saving transaction:', err);
+      alert('Error saving transaction. Please check your input or token.');
     }
   };
 
@@ -45,6 +54,22 @@ export default function Transactions() {
     }
   };
 
+  const handleEdit = (tx) => {
+    setEditingId(tx._id);
+    setForm({
+      type: tx.type,
+      category: tx.category,
+      amount: tx.amount,
+      date: tx.date ? tx.date.slice(0, 10) : '',
+      notes: tx.notes || ''
+    });
+  };
+
+  const handleCancel = () => {
+    setEditingId(null);
+    setForm({ type: 'Expense', category: '', amount: '', date: '', notes: '' });
+  };
+
   return (
     <div className="container">
       <header className="top">
@@ -55,8 +80,8 @@ export default function Transactions() {
       </header>
 
       <section className="card">
-        <h3>Add Transaction</h3>
-        <form onSubmit={handleAdd} className="form-inline">
+        <h3>{editingId ? 'Edit Transaction' : 'Add Transaction'}</h3>
+        <form onSubmit={handleSubmit} className="form-inline">
           <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
             <option>Expense</option>
             <option>Income</option>
@@ -85,7 +110,12 @@ export default function Transactions() {
             onChange={e => setForm({ ...form, notes: e.target.value })}
             placeholder="Notes"
           />
-          <button type="submit">Add</button>
+          <button type="submit">{editingId ? 'Update' : 'Add'}</button>
+          {editingId && (
+            <button type="button" onClick={handleCancel}>
+              Cancel
+            </button>
+          )}
         </form>
       </section>
 
@@ -108,10 +138,13 @@ export default function Transactions() {
                 <td>{new Date(tx.date).toLocaleDateString()}</td>
                 <td>{tx.type}</td>
                 <td>{tx.category}</td>
-                <td>{tx.amount}</td>
+                <td>{formatIDR(tx.amount)}</td>
                 <td>{tx.notes}</td>
                 <td>
-                  <button onClick={() => handleDelete(tx._id)}>Delete</button>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={() => handleEdit(tx)}>Edit</button>
+                    <button onClick={() => handleDelete(tx._id)}>Delete</button>
+                  </div>
                 </td>
               </tr>
             ))}
