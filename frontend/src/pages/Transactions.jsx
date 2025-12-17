@@ -118,9 +118,6 @@ export default function Transactions() {
         <div>
           <span className="eyebrow" style={{ display:'block', marginBottom:'4px', fontSize:'11px', fontWeight:700, color:'#6B7280', letterSpacing:'0.1em' }}>MANAGEMENT</span>
           <h1>Transactions</h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#6B7280' }}>
-            Kelola arus kas masuk dan keluar secara rinci.
-          </p>
         </div>
         
         {/* Right Side: Nav + Profile Circle */}
@@ -198,7 +195,7 @@ export default function Transactions() {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
         <input 
           type="text" 
-          placeholder="🔍 Search category or notes..." 
+          placeholder="Search category or notes..." 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           style={{ maxWidth: '300px', padding: '10px 16px' }}
@@ -208,7 +205,7 @@ export default function Transactions() {
           className="secondary" 
           style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}
         >
-          📥 Export CSV
+          Export CSV
         </button>
       </div>
 

@@ -110,9 +110,6 @@ export default function Goals() {
         <div>
           <span className="eyebrow" style={{ display:'block', marginBottom:'4px', fontSize:'11px', fontWeight:700, color:'#6B7280', letterSpacing:'0.1em' }}>PLANNING</span>
           <h1>Financial Goals</h1>
-          <p style={{ margin: 0, fontSize: '14px', color: '#6B7280' }}>
-            Atur target impianmu. Menabung di sini akan otomatis tercatat di Transaksi.
-          </p>
         </div>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -144,7 +141,7 @@ export default function Goals() {
           <input
             value={form.name}
             onChange={e => setForm({ ...form, name: e.target.value })}
-            placeholder="Goal Name (e.g. Rumah Impian)"
+            placeholder="Goal Name (e.g. Jam)"
             required
             style={{ flex: 2 }}
           />
